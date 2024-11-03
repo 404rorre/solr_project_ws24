@@ -1,6 +1,17 @@
 # Ignore Data folder (prevents on uploading Gigs of Data to Github)
 data/
 
+# Personal Ignores
+# Henri
+
+# Jan
+
+# Valentin
+
+# Max
+solr
+
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
