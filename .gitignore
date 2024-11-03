@@ -9,7 +9,7 @@ data/
 # Valentin
 
 # Max
-solr
+/solr #only root directory affected
 
 
 # Byte-compiled / optimized / DLL files
