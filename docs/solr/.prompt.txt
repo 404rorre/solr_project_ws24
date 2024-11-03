@@ -1,0 +1,5 @@
+create a md file to copy for the tutorial summarize and expand the knowledge on key points that are mentioned within the code.
+
+summarize switches and flags in md tables with the switch/flag , a written out name and a description as well as an example.
+
+
