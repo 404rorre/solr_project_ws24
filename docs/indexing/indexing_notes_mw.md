@@ -40,6 +40,13 @@ Playing around with the separator. Changed it to `|` but `;` should be fine as w
 **Important!**
 Use `multiValued` feature in solr, as this field contains more then one entry. 
 
+# Starting Collection on Solr
+## Setting Up Solr Server
+```bash
+bin/solr start
+```
+
+
 ## Adding Features
 ### Catchall copy field
 ```bash
