@@ -95,3 +95,111 @@ http://localhost:8983/solr/films/query?q=name:batman&q_lexical={!edismax v=$q}&q
 - Combines traditional text search with *vector operations*
 - Supports **filtering**, *reranking*, and score combinations
 - Useful for recommendation systems and content similarity
+
+
+# Solr Vector Search Tutorial - Enhanced Explanation
+
+## Initial Setup
+
+### Schema Configuration
+*Create collection and configure schema for vector search*:
+
+```bash
+bin/solr create -c films
+
+curl http://localhost:8983/solr/films/schema -X POST -H 'Content-type:application/json' --data-binary '{
+  "add-field-type" : {
+    "name":"knn_vector_10",
+    "class":"solr.DenseVectorField",
+    "vectorDimension":10,
+    "similarityFunction":"cosine",
+    "knnAlgorithm":"hnsw"
+  },
+  "add-field" : [
+      {
+        "name":"film_vector",
+        "type":"knn_vector_10",
+        "indexed":true,
+        "stored":true
+      },
+      {
+        "name":"name",
+        "type":"text_general",
+        "multiValued":false,
+        "stored":true
+      },
+      {
+        "name":"initial_release_date",
+        "type":"pdate",
+        "stored":true
+      }
+    ]
+}'
+```
+
+### Vector Field Properties
+| Property | Value | Description |
+|----------|--------|-------------|
+| **vectorDimension** | 10 | Size of vector |
+| **similarityFunction** | cosine | Distance metric |
+| **knnAlgorithm** | hnsw | Search algorithm |
+
+## Vector Calculations
+
+### Calculate Average Vector
+*Using Solr streaming expressions*:
+
+```sql
+let(
+  a=select(
+        search(films,
+          qt="/select",
+          q="name:"Finding Nemo" OR name:"Bee Movie" OR name:"Harry Potter and the Chamber of Secrets"",
+          fl="id,name,film_vector"),
+        film_vector),
+  b=col(a, film_vector),
+  m=matrix(valueAt(b, 0), valueAt(b, 1), valueAt(b, 2)),
+  average=scalarDivide(3, sumColumns(m))
+)
+```
+
+## Search Types
+
+### Basic Vector Search
+| Type | Purpose | Example Query Component |
+|------|---------|------------------------|
+| **KNN Search** | Find similar items | `{!knn f=film_vector topK=10}` |
+| **Filter Query** | Exclude items | `fq=-id:("/en/finding_nemo")` |
+| **Range Filter** | Similarity threshold | `{!frange l=0.8}$q_vector` |
+
+### Advanced Combinations
+
+#### Hybrid Scoring
+*Combining text and vector search*:
+```
+q=name:batman
+q_lexical={!edismax v=$q}
+score_combined=sum(
+    mul(scale($q_lexical,0,1), 0.7),
+    mul(scale($q_vector,0,1), 0.3)
+)
+```
+
+#### Reranking
+*Apply vector similarity to top results*:
+```
+&rqq={!knn f=film_vector topK=10000}
+&rq={!rerank reRankQuery=$rqq reRankDocs=5 reRankWeight=2}
+```
+
+## Query Variables
+| Variable | Purpose | Example |
+|----------|---------|---------|
+| **$q_vector** | Vector scores | `sort=$q_vector desc` |
+| **$q_lexical** | Text scores | `q_lexical={!edismax v=$q}` |
+| **$score_combined** | Combined scores | `sort=$score_combined desc` |
+
+## Score Transformations
+- *Scale scores* to 0-1 range
+- *Apply weights* (e.g., 70% text, 30% vector)
+- *Combine scores* using sum/multiplication
