@@ -10,7 +10,7 @@ data/
 
 # Max
 /solr #only root directory affected
-
+test/
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
