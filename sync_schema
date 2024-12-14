@@ -1,0 +1,86 @@
+#!/bin/bash
+
+man="
+Available parameter (choose only one!):
+-syn 	» (Overwrites) Synchronize local solr schema with schema folder for GitHub.
+-cp 	» (Overwrites) Copy solr schema from GitHub schema folder to local solr schema folder.
+-bak 	» (Overwrites) Backup local solr schema to seperate folder.
+"
+
+if [[ $# -eq 0 ]]; then
+	echo "ERROR: Parameter missing."
+	printf "$man"
+	exit 9
+fi
+
+if [[ $# -gt 1 ]]; then
+	echo "ERROR: Only choose one parameter!"
+		printf "$man"
+	exit 9
+fi
+
+if [[ -z $(find -name "managed-schema.xml") ]]; then
+	echo "ERROR: No schema xml found"
+	echo ""
+	echo "1. Check if solr is installed."
+	echo "2. Check if collection has been created."
+	exit 9
+fi
+
+# Synching Files from local solr to GitHub Solr
+if [[ $1 = "-syn" ]]; then
+	# Search all available schemas and create directories for each in GitHub directories.
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
+	xargs -I {} mkdir -p schema_files/{} &&
+
+	# Search all schema.xml paths and alter to new directory paths.
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
+	xargs -I {} echo "schema_files/"{} > dest &&
+
+	# Search all original schema.xml paths and save paths
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) > origin &&
+	
+	# Copy all schema.xml into respective directories
+	paste origin dest | xargs -n2 cp &&
+
+	rm origin dest
+	exit 1	
+fi
+
+# Saving Files from local solr to backup.
+if [[ $1 = "-bak" ]]; then
+	# Search all available schemas and create directories for each in GitHub directories.
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
+	xargs -I {} mkdir -p schema_backup/{} &&
+
+	# Search all schema.xml paths and alter to new directory paths.
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
+	xargs -I {} echo "schema_backup/"{} > dest &&
+
+	# Search all original schema.xml paths and save paths
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) > origin &&
+
+	# Copy all schema.xml into respective directories
+	paste origin dest | xargs -n2 cp &&
+
+	rm origin dest
+	exit 1	
+fi
+
+# Copy GitHub solr to local solr
+if [[ $1 = "-cp" ]]; then
+	# Search local solr directory & Copy files from Github solr to local solr.
+	find -name "managed-schema.xml" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
+	head -n 1 |\
+	sed "s/\(.*\/server\/solr\).*/\1/"|\
+	xargs -I {} cp -r schema_files/* {}
+	exit 1
+fi
+
+echo "ERROR: Choose existing Parameters!"
+printf "$man"
+exit 9
