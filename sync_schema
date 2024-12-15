@@ -147,10 +147,13 @@ fi
 # Saving Files from local solr to backup.
 if [[ $bak -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
-	echo "▓Start backing up schemas into schema_backup/▓"
+	echo "▓Copying▓"
 	echo "↓"
+	echo "Start backing up schemas into schema_backup/"
 	copy schema_backup
 	echo ""
 fi
+
+echo "» Finished synchronizing schemas «"
 
 exit 1
