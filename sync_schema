@@ -25,7 +25,7 @@ copy()
 	paste <(printf '%s\n' $origin) <(printf '%s\n' $dest) | xargs -n2 cp
 }
 
-# Declare Manual
+# Init Variables
 man="
 Available parameter (choose only one!):
 -togit 		» (Overwrites) Copy own schema to group schema.
@@ -35,6 +35,11 @@ Available parameter (choose only one!):
 			  Example: syn_schema -togit -syn
 -bak 		» (Overwrites) Copy local schema to Backup folder.
 "
+
+start="
+
+"
+
 
 # Raise silent exception with manual when no command switches are inserted
 if [[ $# -eq 0 ]]; then
@@ -80,12 +85,13 @@ do
 		esac
 done
 
-# ###############################
-# Local Schema to Goup Schema
-# ###############################
+# ################################
+# # Local Schema to Goup Schema  #
+# ################################
 # Pull Github schema before pushing 
 if [[ $togit -eq 1 && $syn -eq 1 ]]; then
-	echo "Github » Pull Github schema ..."
+	echo "▓Github » Pull Github schema▓"
+	echo "↓"
 	git pull origin main
 	echo ""
 fi
@@ -93,6 +99,8 @@ fi
 # Copy local schema to group schema
 if [[ $togit -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
+	echo "▓Copying▓"
+	echo "↓"
 	echo "Start copying own schemas to schema_files/ ..."
 	copy schema_files
 	echo ""		
@@ -100,20 +108,22 @@ fi
 
 # Create Commit & Push to Github
 if [[ $togit -eq 1 && $syn -eq 1 ]]; then
-	echo "Github » Push local schema commit ..."
+	echo "▓Github » Push local schema commit▓"
+	echo "↓"
 	git add schema_files/
 	git commit -m "updated schema $(date +"%D_%H-%M")"
 	git push -u origin main
 	echo ""
 fi
 
-# ###############################
-# Group Schema to Local Schema
-# ###############################
+# ################################
+# # Group Schema to Local Schema #
+# ################################
  
 # Pull Github schema
 if [[ $tolocal -eq 1 && $syn -eq 1 ]]; then
-	echo "Github » Pull Github schema ..."
+	echo "▓Github » Pull Github schema▓"
+	echo "↓"
 	git pull origin main
 	echo ""
 fi
@@ -121,6 +131,8 @@ fi
 # Copy group schema to own schema
 if [[ $tolocal -eq 1 ]]; then
 	# Search local solr directory & Copy files from Github solr to local solr.
+	echo "▓Copying▓"
+	echo "↓"
 	echo "Start copying schemas to own schemas ..."
 	find -name "managed-schema.xml" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
 	head -n 1 |\
@@ -129,13 +141,14 @@ if [[ $tolocal -eq 1 ]]; then
 	echo ""
 fi
 
-# ###############################
-# Backup
-# ###############################
+# ################################
+# #          Backup              #
+# ################################
 # Saving Files from local solr to backup.
 if [[ $bak -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
-	echo "Start backing up schemas into schema_backup/ ..."
+	echo "▓Start backing up schemas into schema_backup/▓"
+	echo "↓"
 	copy schema_backup
 	echo ""
 fi
