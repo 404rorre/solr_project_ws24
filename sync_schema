@@ -1,24 +1,48 @@
 #!/bin/bash
 
+
+# Declare function to sync
+copy()
+{
+	path=$1
+	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
+	xargs -I {} mkdir -p $path"/"{} &&
+
+	# Search all schema.xml paths and alter to new directory paths.
+	dest=$(find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
+	xargs -I {} echo $path"/"{})  &&
+
+	# Search all original schema.xml paths and save paths
+	origin=$(find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) ) &&
+	
+	# Copy all schema.xml into respective directories
+	# paste can only read file structures
+	# <() create a file like structure
+	# printf '%s\n' treats variable as string and seperates via internal IFS=" "
+	# prints new line because $var is not in "$var", if it would be, the \n would happen after the $var
+	paste <(printf '%s\n' $origin) <(printf '%s\n' $dest) | xargs -n2 cp
+}
+
+# Declare Manual
 man="
 Available parameter (choose only one!):
--syn 	» (Overwrites) Synchronize local solr schema with schema folder for GitHub.
--cp 	» (Overwrites) Copy solr schema from GitHub schema folder to local solr schema folder.
--bak 	» (Overwrites) Backup local solr schema to seperate folder.
+-togit 		» (Overwrites) Copy own schema to group schema.
+-tolocal 	» (Overwrites) Copy group schema to own schema.
+-syn		» Get schema from Github or Upload schema to Github. 
+			  ATTENTION! » works only in combination with -togit / -tolocal
+			  Example: syn_schema -togit -syn
+-bak 		» (Overwrites) Copy local schema to Backup folder.
 "
 
+# Raise silent exception with manual when no command switches are inserted
 if [[ $# -eq 0 ]]; then
-	echo "ERROR: Parameter missing."
 	printf "$man"
 	exit 9
 fi
 
-if [[ $# -gt 1 ]]; then
-	echo "ERROR: Only choose one parameter!"
-		printf "$man"
-	exit 9
-fi
-
+# Raise exception when no local managed-schema.xml is found or a solr installation is missing.
 if [[ -z $(find -name "managed-schema.xml") ]]; then
 	echo "ERROR: No schema xml found"
 	echo ""
@@ -27,60 +51,87 @@ if [[ -z $(find -name "managed-schema.xml") ]]; then
 	exit 9
 fi
 
-# Synching Files from local solr to GitHub Solr
-if [[ $1 = "-syn" ]]; then
-	# Search all available schemas and create directories for each in GitHub directories.
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
-	xargs -I {} mkdir -p schema_files/{} &&
+# Iterate through command switches
+while [[ -n $1 ]]
+do
+	case "$1" in 
+		"-togit")
+					togit=1
+					shift
+					;;
 
-	# Search all schema.xml paths and alter to new directory paths.
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
-	xargs -I {} echo "schema_files/"{} > dest &&
+		"-tolocal")
+					tolocal=1
+					shift
+					;;
 
-	# Search all original schema.xml paths and save paths
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) > origin &&
-	
-	# Copy all schema.xml into respective directories
-	paste origin dest | xargs -n2 cp &&
+		"-syn")
+					syn=1
+					shift
+					;;
+		"-bak") 
+					bak=1
+					shift
+					;;
+		*)
+					echo "$1 not recognized, will not be executed."
+					shift
+					;;
+		esac
+done
 
-	rm origin dest
-	exit 1	
+# ###############################
+# Local Schema to Goup Schema
+# ###############################
+# Pull Github schema before pushing 
+if [[ $togit -eq 1 && $syn -eq 1 ]]; then
+	echo "Github » Pull Github schema ..."
+	git pull origin main
 fi
 
-# Saving Files from local solr to backup.
-if [[ $1 = "-bak" ]]; then
+# Copy local schema to group schema
+if [[ $togit -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
-	xargs -I {} mkdir -p schema_backup/{} &&
-
-	# Search all schema.xml paths and alter to new directory paths.
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
-	xargs -I {} echo "schema_backup/"{} > dest &&
-
-	# Search all original schema.xml paths and save paths
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) > origin &&
-
-	# Copy all schema.xml into respective directories
-	paste origin dest | xargs -n2 cp &&
-
-	rm origin dest
-	exit 1	
+	echo "Start copying own schemas to schema_files/ ..."
+	copy schema_files
 fi
 
-# Copy GitHub solr to local solr
-if [[ $1 = "-cp" ]]; then
+# Create Commit & Push to Github
+if [[ $togit -eq 1 && $syn -eq 1 ]]; then
+	echo "Github » Push local schema commit ..."
+	git add schema_files/
+	git commit -m "updated schema $(date +"%D_%H-%M")"
+	git push -u origin main
+fi
+
+# ###############################
+# Group Schema to Local Schema
+# ###############################
+ 
+# Pull Github schema
+if [[ $tolocal -eq 1 && $syn -eq 1 ]]; then
+	echo "Github » Pull Github schema ..."
+	git pull origin main
+fi
+
+# Copy group schema to own schema
+if [[ $tolocal -eq 1 ]]; then
 	# Search local solr directory & Copy files from Github solr to local solr.
+	echo "Start copying schemas to own schemas ..."
 	find -name "managed-schema.xml" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
 	head -n 1 |\
 	sed "s/\(.*\/server\/solr\).*/\1/"|\
 	xargs -I {} cp -r schema_files/* {}
-	exit 1
 fi
 
-echo "ERROR: Choose existing Parameters!"
-printf "$man"
-exit 9
+# ###############################
+# Backup
+# ###############################
+# Saving Files from local solr to backup.
+if [[ $bak -eq 1 ]]; then
+	# Search all available schemas and create directories for each in GitHub directories.
+	echo "Start backing up schemas into schema_backup/ ..."
+	copy schema_backup
+fi
+
+exit 1
