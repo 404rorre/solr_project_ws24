@@ -87,6 +87,7 @@ done
 if [[ $togit -eq 1 && $syn -eq 1 ]]; then
 	echo "Github » Pull Github schema ..."
 	git pull origin main
+	echo ""
 fi
 
 # Copy local schema to group schema
@@ -94,6 +95,7 @@ if [[ $togit -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
 	echo "Start copying own schemas to schema_files/ ..."
 	copy schema_files
+	echo ""		
 fi
 
 # Create Commit & Push to Github
@@ -102,6 +104,7 @@ if [[ $togit -eq 1 && $syn -eq 1 ]]; then
 	git add schema_files/
 	git commit -m "updated schema $(date +"%D_%H-%M")"
 	git push -u origin main
+	echo ""
 fi
 
 # ###############################
@@ -112,6 +115,7 @@ fi
 if [[ $tolocal -eq 1 && $syn -eq 1 ]]; then
 	echo "Github » Pull Github schema ..."
 	git pull origin main
+	echo ""
 fi
 
 # Copy group schema to own schema
@@ -122,6 +126,7 @@ if [[ $tolocal -eq 1 ]]; then
 	head -n 1 |\
 	sed "s/\(.*\/server\/solr\).*/\1/"|\
 	xargs -I {} cp -r schema_files/* {}
+	echo ""
 fi
 
 # ###############################
@@ -132,6 +137,7 @@ if [[ $bak -eq 1 ]]; then
 	# Search all available schemas and create directories for each in GitHub directories.
 	echo "Start backing up schemas into schema_backup/ ..."
 	copy schema_backup
+	echo ""
 fi
 
 exit 1
