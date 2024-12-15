@@ -66,7 +66,9 @@ git_push()
 
 # Init Variables
 man="
-Available parameter (choose only one!):
+syn_schema [-option1] [-option2] [...]
+
+Available parameter (You can choose more then one.):
 -togit 		» (Overwrites) Copy own schema to group schema.
 -tolocal 	» (Overwrites) Copy group schema to own schema.
 -syn		» Get schema from Github or Upload schema to Github. 
