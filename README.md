@@ -3,6 +3,14 @@ Building and optimizing an information retrieval system for COVID-19 research pa
 
 *Project for DIS17.1 - Search Engine Technology, TH Köln, WS 2024*
 
+# Repo Help
+## Schaer Solr Query
+[Mini Trec Challenge](https://github.com/irgroup-classrooms/dis17-2024)
+
+## Trec Eval Python
+[pytrec_eval](https://github.com/cvangysel/pytrec_eval)
+
+
 # Setup Guide for TREC-COVID Project
 
 ## Prerequisites
