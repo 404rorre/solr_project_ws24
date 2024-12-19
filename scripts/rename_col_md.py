@@ -1,12 +1,17 @@
 import pandas as pd
 
-f_path = "../data/index/metadata.csv"
+f_path = "data/index/metadata.csv"
 
 df = pd.read_csv(f_path)
+
+print(df)
 
 if "id" in df.columns:
     print("Nothing done column exists already")
 else :
-    df.rename(columns={"cord_uid":"id"})
+    df = df.rename(columns={"cord_uid":"id"})
 
+print(df)
 df.to_csv(f_path)
+
+print("Changed Column successfully!")
