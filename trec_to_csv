@@ -1,0 +1,5 @@
+#!/bin/bash
+
+./trec_eval data/qrel/qrels-covid_d5_j0.5-5.txt $1 |  cut -f 3 | xargs -I {} printf "%s," {} | xargs -I {} printf "%s\n" {} >> trec_log.csv &&
+mkdir -p runs/processed &&
+mv $1 runs/processed
