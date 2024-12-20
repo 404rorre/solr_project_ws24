@@ -13,7 +13,7 @@ class QUERY():
     Queries solr with different cores and queries and topics.
     Returns a *.run file with results.
     """
-    def __init__(self, version: str=None, core: str=None, rows: int=1000, url_query: str=None):
+    def __init__(self, version: str=None, core: str=None, rows: int=1000, url_query: str=None, df_topics: pd.DataFrame=None):
         """ 
         Init Parameters
         """
@@ -26,8 +26,10 @@ class QUERY():
         self.run_file = f"{core}_{version}.run"
         self.url_query = url_query
         self.version = version
+        self.df_topics = df_topics
         self.topicfile = 'data/topics/topics-rnd5.xml'
-        
+        self.f_new_topic = True if self.df_topics else False
+            
     def run(self):
         """ 
         Runs whole topic with respective solr core.
@@ -86,19 +88,19 @@ class QUERY():
         """ 
         Runs whole topics.
         """
-        f_new_topic = False
         # query the title_txt field with the query taken from the topic file for all 50 topics
-        if not f_new_topic:
-            df_topics = pd.read_xml(self.topicfile)
+        if not self.f_new_topic:
+            self.df_topics = pd.read_xml(self.topicfile)
         
+        print(f"Start run: {self.run_file}\n")
         with open(self.run_file, 'w') as f_out:
-            with tqdm(total=len(df_topics), desc="Querying Topics") as pbar:
-                for idx_topic in range(len(df_topics)):    
+            with tqdm(total=len(self.df_topics), desc="Querying Topics") as pbar:
+                for idx_topic in range(len(self.df_topics)):    
 
-                    self.query = df_topics["query"][idx_topic]
-                    self.question= df_topics["question"][idx_topic]
-                    self.narrative= df_topics["narrative"][idx_topic]
-                    self.topicId = str(df_topics["number"][idx_topic])   
+                    self.query = self.df_topics["query"][idx_topic]
+                    self.question= self.df_topics["question"][idx_topic]
+                    self.narrative= self.df_topics["narrative"][idx_topic]
+                    self.topicId = str(self.df_topics["number"][idx_topic])   
 
                     # We assume that there are two fields index: title_txt and abstract_txt - Your milage may vary... 
                     q = self.gen_query_url(url_query=self.url_query)
@@ -116,7 +118,8 @@ class QUERY():
                         f_out.write(out_str + '\n')
                         rank += 1
                     pbar.update(idx_topic)
-
+        print(f"Finished run: {self.run_file}\n")
+                    
 if __name__=="__main__":
     query = "title:(query) abstract:(query)"
     solr = QUERY(version="test_v1", 
