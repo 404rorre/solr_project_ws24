@@ -25,7 +25,7 @@ class QUERY():
         self.rows = f"&rows={rows}"
         self.run_file = f"{core}_{version}.run"
         self.url_query = url_query
-        self.version = version
+        self.version = f"{core}_{version}"
         self.df_topics = df_topics
         self.topicfile = 'data/topics/topics-rnd5.xml'
         self.f_new_topic = True if self.df_topics else False
@@ -123,7 +123,7 @@ class QUERY():
 if __name__=="__main__":
     query = "title:(query) abstract:(query)"
     solr = QUERY(version="test_v1", 
-                 core="test", 
+                 core="base_bm25", 
                  rows=1000, 
                  url_query=query)
     
