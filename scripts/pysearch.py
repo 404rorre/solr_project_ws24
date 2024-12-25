@@ -13,7 +13,13 @@ class QUERY():
     Queries solr with different cores and queries and topics.
     Returns a *.run file with results.
     """
-    def __init__(self, version: str=None, core: str=None, rows: int=1000, url_query: str=None, df_topics: pd.DataFrame=None):
+    def __init__(self, version: str=None, 
+                 core: str=None, 
+                 rows: int=1000, 
+                 url_query: str=None, 
+                 df_topics: pd.DataFrame=None, 
+                 topicfile: str='data/topics/topics-rnd5.xml'
+                 ):
         """ 
         Init Parameters
         """
@@ -27,8 +33,8 @@ class QUERY():
         self.url_query = url_query
         self.version = f"{core}_{version}"
         self.df_topics = df_topics
-        self.topicfile = 'data/topics/topics-rnd5.xml'
-        self.f_new_topic = True if self.df_topics else False
+        self.topicfile = topicfile
+        self.f_new_topic = True if not df_topics.empty else False
             
     def run(self):
         """ 
@@ -69,7 +75,7 @@ class QUERY():
         else:
             print("\nTopic file exists continue to next step...")
         
-    def gen_query_url(self, url_query: str=None):
+    def gen_query_url(self, url_query: str=None, idx_topic: int=None):
         """ 
         Returns arbitrary query.
         """
@@ -82,6 +88,10 @@ class QUERY():
             url_query = url_query.replace("question",f"{self.question}")
         if self.narrative:
             url_query = url_query.replace("narrative",f"{self.narrative}")
+        for col in range(len(self.df_topics.columns) -4+1): # reducing range in for loop by -4 because of the original columns of the topic file # +1 for including last column
+            col = col+4 # expanding again for right column index # -1 for index counting (off by one)
+            url_query = url_query.replace(f"${col}",f"{self.df_topics.iloc[idx_topic, col-1]}")
+            
         return url_query
 
     def run_queries(self):
@@ -90,7 +100,10 @@ class QUERY():
         """
         # query the title_txt field with the query taken from the topic file for all 50 topics
         if not self.f_new_topic:
-            self.df_topics = pd.read_xml(self.topicfile)
+            if ".csv" in self.f_new_topic:
+                self.df_topics = pd.read_csv(self.topicfile)
+            if ".xml" in self.f_new_topic:
+                self.df_topics = pd.read_xml(self.topicfile)
         
         print(f"Start run: {self.run_file}\n")
         with open(self.run_file, 'w') as f_out:
@@ -103,7 +116,8 @@ class QUERY():
                 self.topicId = str(self.df_topics["number"][idx_topic])   
 
                 # We assume that there are two fields index: title_txt and abstract_txt - Your milage may vary... 
-                q = self.gen_query_url(url_query=self.url_query)
+                q = self.gen_query_url(url_query=self.url_query,idx_topic=idx_topic)
+                print(q)
                 
                 url = ''.join([self.base_url, q, self.fields, self.rows])
                 #print(url)

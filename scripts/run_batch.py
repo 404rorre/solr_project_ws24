@@ -1,5 +1,7 @@
+import pandas as pd
 from tqdm import tqdm
 from pysearch import QUERY
+
 
 
 cores = [
@@ -9,15 +11,15 @@ cores = [
     "textEN_LMDirichlet"    
 ]
 queries= [
-    "title:(query)",
-    "abstract:(query)",
-    "title:(query) abstract:(query)"
+    "title:($6)",
+    "abstract:($6)",
+    "title:($6) abstract:($6)"
 ]
-version_start= 1
+version_start= 7
 versions = [
     n for n in range(1, len(queries)+1)
 ]
-
+df_topics =  pd.read_csv("data/topics/topics_llm_queryexpansion.csv")
 
 n = 0
 for core in cores:
@@ -28,7 +30,8 @@ for core in cores:
         solr = QUERY(version=str(version+version_start-1), 
                     core=core, 
                     rows=1000, 
-                    url_query=query)
+                    url_query=query,
+                    df_topics=df_topics)
 
         solr.run()
         #pbar.update(n)
