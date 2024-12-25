@@ -3,7 +3,10 @@ from pysearch import QUERY
 
 
 cores = [
-    "base_LMDirichlet"
+    "textEN_bm25",
+    "textEN_DFI",
+    "textEN_IBS",
+    "textEN_LMDirichlet"    
 ]
 queries= [
     "title:(query)",
@@ -18,17 +21,20 @@ versions = [
 
 n = 0
 for core in cores:
-    with tqdm(total=len(cores)*len(versions), desc="Running Settings", position=0) as pbar:
-        for version in versions:
-            query = queries[version-1]
-            print("Running...", f"Core:{core}", f"Version:{version+version_start-1}", f"Query:{query}", sep="\t")
-            solr = QUERY(version=str(version+version_start-1), 
-                        core=core, 
-                        rows=1000, 
-                        url_query=query)
-    
-            solr.run()
-            pbar.update(n)
-            n += 1
+    #with tqdm(total=len(cores)*len(versions), desc="Running Settings", position=-0) as pbar: # maybe later too much time for debugging
+    for version in versions:
+        query = queries[version-1]
+        print("Running...", f"Core:{core}", f"Version:{version+version_start-1}", f"Query:{query}", sep="\t")
+        solr = QUERY(version=str(version+version_start-1), 
+                    core=core, 
+                    rows=1000, 
+                    url_query=query)
 
-print("finished runs")
+        solr.run()
+        #pbar.update(n)
+        n += 1
+
+
+print("Finished runs")
+print("Planned runs:\t",len(cores)*len(versions))
+print("Executed runs:\t",n)

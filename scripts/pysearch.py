@@ -94,30 +94,29 @@ class QUERY():
         
         print(f"Start run: {self.run_file}\n")
         with open(self.run_file, 'w') as f_out:
-            with tqdm(total=len(self.df_topics), desc="Querying Topics") as pbar:
-                for idx_topic in range(len(self.df_topics)):    
 
-                    self.query = self.df_topics["query"][idx_topic]
-                    self.question= self.df_topics["question"][idx_topic]
-                    self.narrative= self.df_topics["narrative"][idx_topic]
-                    self.topicId = str(self.df_topics["number"][idx_topic])   
+            for idx_topic in range(len(self.df_topics)):    
 
-                    # We assume that there are two fields index: title_txt and abstract_txt - Your milage may vary... 
-                    q = self.gen_query_url(url_query=self.url_query)
-                    
-                    url = ''.join([self.base_url, q, self.fields, self.rows])
-                    #print(url)
-                    json = get(url).json()        
-                    
-                    rank = 1                
-                    
-                    for doc in json.get('response').get('docs'):
-                        docid = doc.get(self.docid)            
-                        score = doc.get('score')
-                        out_str = '\t'.join([self.topicId, 'Q0', str(docid), str(rank), str(score), self.version])
-                        f_out.write(out_str + '\n')
-                        rank += 1
-                    pbar.update(idx_topic)
+                self.query = self.df_topics["query"][idx_topic]
+                self.question= self.df_topics["question"][idx_topic]
+                self.narrative= self.df_topics["narrative"][idx_topic]
+                self.topicId = str(self.df_topics["number"][idx_topic])   
+
+                # We assume that there are two fields index: title_txt and abstract_txt - Your milage may vary... 
+                q = self.gen_query_url(url_query=self.url_query)
+                
+                url = ''.join([self.base_url, q, self.fields, self.rows])
+                #print(url)
+                json = get(url).json()        
+                
+                rank = 1                
+                
+                for doc in json.get('response').get('docs'):
+                    docid = doc.get(self.docid)            
+                    score = doc.get('score')
+                    out_str = '\t'.join([self.topicId, 'Q0', str(docid), str(rank), str(score), self.version])
+                    f_out.write(out_str + '\n')
+                    rank += 1
         print(f"Finished run: {self.run_file}\n")
                     
 if __name__=="__main__":
