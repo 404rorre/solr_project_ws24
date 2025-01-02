@@ -6,32 +6,39 @@
 copy()
 {
 	path="$1"
-	find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
-	xargs -I {} mkdir -p "$path/{}" &&
+	declare -a schemas=("managed-schema.xml" "schema.xml")
+	for schema in "${schemas[@]}"
+	do
+		find -name "$schema" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+		sed "s/.*\/server\/solr\/\(.*\)\/.*/\1/" | \
+		xargs -I {} mkdir -p "$path/{}" &&
 
-	# Search all schema.xml paths and alter to new directory paths.
-	dest=$(find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
-	sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
-	xargs -I {} echo "$path/{}")  &&
+		# Search all schema.xml paths and alter to new directory paths.
+		dest=$(find -name "$schema" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+		sed "s/.*\/server\/solr\/\(.*\)/\1/" | \
+		xargs -I {} echo "$path/{}")  &&
 
-	# Search all original schema.xml paths and save paths
-	origin=$(find -name "managed-schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) ) &&
-	
-	# Copy all schema.xml into respective directories
-	# paste can only read file structures
-	# <() create a file like structure
-	# printf '%s\n' treats variable as string and seperates via internal IFS=" "
-	# prints new line because $var is not in "$var", if it would be, the \n would happen after the $var
-	paste <(printf '%s\n' $origin) <(printf '%s\n' $dest) | xargs -n2 cp
+		# Search all original schema.xml paths and save paths
+		origin=$(find -name "$schema" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) ) &&
+		
+		# Copy all schema.xml into respective directories
+		# paste can only read file structures
+		# <() create a file like structure
+		# printf '%s\n' treats variable as string and seperates via internal IFS=" "
+		# prints new line because $var is not in "$var", if it would be, the \n would happen after the $var
+		paste <(printf '%s\n' $origin) <(printf '%s\n' $dest) | xargs -n2 cp
+	done
 }
 
 copy_git()
-{
-	find -name "managed-schema.xml" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
-	head -n 1 |\
-	sed "s/\(.*\/server\/solr\).*/\1/"|\
-	xargs -I {} cp -r schema_files/* {}
+{	declare -a schemas=("managed-schema.xml" "schema.xml")
+	for schema in "${schemas[@]}"
+	do
+		find -name "$schema" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
+		head -n 1 |\
+		sed "s/\(.*\/server\/solr\).*/\1/"|\
+		xargs -I {} cp -r schema_files/* {}
+	done
 }
 
 git_pull()
