@@ -121,7 +121,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 # Raise exception when no local managed-schema.xml is found or a solr installation is missing.
-if [[ -z $(find -name "managed-schema.xml") ]]; then
+if [[ -z $(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) ) ]]; then
 	echo "ERROR: No schema xml found"
 	echo ""
 	echo "1. Check if solr is installed."
@@ -251,7 +251,7 @@ if [[ $bak -eq 1 ]]; then
 fi
 
 # ################################
-# #          Backup              #
+# #        Create Cores          #
 # ################################
 # Pull Github schema
 if [[ $create -eq 1 && $syn -eq 1 ]]; then
@@ -263,7 +263,10 @@ if [[ $create -eq 1 ]]; then
 	# Finding available cores from Github.
 	cores=$(find -name "*schema.xml" \( -not -path "*/solr/server/solr/*" -not -path "*/schema_backup/*" \) | sed "s/.*\/schema_files\/\(.*\)\/conf.*/\1/" )
 	# Settin Path to check if cores exist.
-	solr_path=$(find -name "*schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
+	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
+	# Set solr base_dir & Create symbolic link for adressing solr
+	solr_base_dir=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\.\/\(.*\/solr\)\/server\/solr\/.*/\1/" | head -n 1 )
+	ln -s "$solr_base_dir"/bin/solr solr
 	# Set metadata.csv path
 	metadata="data/index/metadata.csv"
 
