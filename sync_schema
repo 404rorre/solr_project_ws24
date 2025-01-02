@@ -73,20 +73,21 @@ git_push()
 
 solr_helper()
 {	
- 	if [[ $1 = "start" ]]; then
+	solr_binary=$1
+ 	if [[ $2 = "start" ]]; then
 	 	echo "▓Restarting Solr▓"
 	    echo "↓"
 	    # Safety start so no overlapping occurs during runtime
-	    ./solr start && sleep 5 # Give it a small initial delay
+	    ./$solr_binary start && sleep 5 # Give it a small initial delay
 	    solr_pid=$! # Capture the PID
 	    wait $solr_pid # Wait for Solr to start
 	fi
 
-    if [[ $1 = "stop" ]]; then
+    if [[ $2 = "stop" ]]; then
     	echo "▓Stopping Solr▓"
 	    echo "↓"
 	    # Safety start so no overlapping occurs during runtime
-	    ./solr stop --all && sleep 5 # Give it a small initial delay
+	    ./$solr_binary stop --all && sleep 5 # Give it a small initial delay
 	    solr_pid=$! # Capture the PID
 	    wait $solr_pid # Wait for Solr to start    	
 	fi
@@ -266,7 +267,7 @@ if [[ $create -eq 1 ]]; then
 	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
 	# Set solr base_dir & Create symbolic link for adressing solr
 	solr_base_dir=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\.\/\(.*\/solr\)\/server\/solr\/.*/\1/" | head -n 1 )
-	ln -s "$solr_base_dir"/bin/solr solr
+	solr_binary="$solr_base_dir/bin/solr"
 	# Set metadata.csv path
 	metadata="data/index/metadata.csv"
 
@@ -282,13 +283,13 @@ if [[ $create -eq 1 ]]; then
 	    else
 	    	# Creates core if it doesn't exist.
 			# Safety stop and start so no overlapping occurs during runtime
-			solr_helper stop &&
-			solr_helper start && 
+			solr_helper $solr_binary stop &&
+			solr_helper $solr_binary start && 
 			echo "▓Creating Core: $core▓"
 			echo "↓"
-	        ./solr create -c "$core";
+	        ./$solr_binary create -c "$core";
 	        # Needs to restart the solr installation to apply changes made manually.
-			solr_helper stop &&
+			solr_helper $solr_binary stop &&
 	        # Search local solr directory & Copy files from Github solr to local solr.
 			echo "▓Copying▓"
 			echo "↓"
@@ -296,7 +297,7 @@ if [[ $create -eq 1 ]]; then
 			cp schema_files/"$core"/conf/* "$core_path"/conf/.
 			echo ""
 			# Start Solr again for indexing
-			solr_helper start && 
+			solr_helper $solr_binary start && 
 			echo ""
 			echo "▓Testing if applied Search Engine successfully changed▓"
 			echo "↓"
@@ -306,7 +307,7 @@ if [[ $create -eq 1 ]]; then
 			if [[ -f $metadata ]]; then
 				echo "▓Indexing Solr: $core▓"
 				echo "↓"
-		        ./solr post -c $core $metadata --params "&skip=arxiv_id,publish_time,pubmed_id&header=true";
+		        ./$solr_binary post -c $core $metadata --params "&skip=arxiv_id,publish_time,pubmed_id&header=true";
         	else 
     			echo "▓!!!Aborted Indexing!!!▓"
     			echo "metadata.csv must exist in following directory!"
@@ -318,7 +319,7 @@ if [[ $create -eq 1 ]]; then
 	    fi
 	done
 
-	solr_helper stop
+	solr_helper $solr_binary stop
 fi
 
 echo "» Finished synchronizing schemas «"
