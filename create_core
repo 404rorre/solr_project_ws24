@@ -1,0 +1,7 @@
+#!/bin/bash
+
+metadata="data/index/metadata.csv"
+
+if [[ -f $metadata ]]; then
+    echo "file exists"
+fi

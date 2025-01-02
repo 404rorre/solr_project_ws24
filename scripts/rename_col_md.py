@@ -12,6 +12,6 @@ else :
     df = df.rename(columns={"cord_uid":"id"})
 
 print(df)
-df.to_csv(f_path)
+df.to_csv(f_path, index=False)
 
 print("Changed Column successfully!")

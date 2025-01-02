@@ -71,6 +71,27 @@ git_push()
 	echo ""
 }
 
+solr_helper()
+{	
+ 	if [[ $1 = "start" ]]; then
+	 	echo "▓Restarting Solr▓"
+	    echo "↓"
+	    # Safety start so no overlapping occurs during runtime
+	    ./solr start && sleep 5 # Give it a small initial delay
+	    solr_pid=$! # Capture the PID
+	    wait $solr_pid # Wait for Solr to start
+	fi
+
+    if [[ $1 = "stop" ]]; then
+    	echo "▓Stopping Solr▓"
+	    echo "↓"
+	    # Safety start so no overlapping occurs during runtime
+	    ./solr stop --all && sleep 5 # Give it a small initial delay
+	    solr_pid=$! # Capture the PID
+	    wait $solr_pid # Wait for Solr to start    	
+	fi
+}
+
 # Init Variables
 man="
 syn_schema [-option1] [-option2] [...]
@@ -82,6 +103,10 @@ Available parameter (You can choose more then one.):
 			  ATTENTION! » works only in combination with -togit / -tolocal
 			  Example: syn_schema -togit -syn
 -bak 		» (Overwrites) Copy local schema to Backup folder.
+-createcore	» Creates new Cores and indexes them with them metadata.csv.
+			  !!!ATTENTION!!!
+			  metadata.csv must be in following directory:
+			  data/index/metadata.csv
 "
 
 start="
@@ -104,6 +129,10 @@ if [[ -z $(find -name "managed-schema.xml") ]]; then
 	exit 9
 fi
 
+
+# Set create to 0 for savety, so no accident copy with -tolocal happens before
+create=0
+
 # Iterate through command switches
 while [[ -n $1 ]]
 do
@@ -124,6 +153,10 @@ do
 					;;
 		"-bak") 
 					bak=1
+					shift
+					;;
+		"-createcore") 
+					create=1
 					shift
 					;;
 		*)
@@ -190,13 +223,18 @@ if [[ $tolocal -eq 1 && $syn -eq 1 ]]; then
 fi
 
 # Copy group schema to own schema
-if [[ $tolocal -eq 1 ]]; then
+if [[ $tolocal -eq 1 && $create -ne 1 ]]; then
 	# Search local solr directory & Copy files from Github solr to local solr.
 	echo "▓Copying▓"
 	echo "↓"
 	echo "Start copying schemas to own schemas ..."
+	solr_helper stop
 	copy_git
 	echo ""
+else 
+	echo "▓Aborted▓"
+	echo "Creating Cores is choosen."
+	echo "-tolocal and -createcore can't be choosen the at the same time."
 fi
 
 # ################################
@@ -210,6 +248,74 @@ if [[ $bak -eq 1 ]]; then
 	echo "Start backing up schemas into schema_backup/"
 	copy schema_backup
 	echo ""
+fi
+
+# ################################
+# #          Backup              #
+# ################################
+# Pull Github schema
+if [[ $create -eq 1 && $syn -eq 1 ]]; then
+	git_pull
+fi
+
+# Creating non existing cores and saving schemas as well as
+if [[ $create -eq 1 ]]; then
+	# Finding available cores from Github.
+	cores=$(find -name "*schema.xml" \( -not -path "*/solr/server/solr/*" -not -path "*/schema_backup/*" \) | sed "s/.*\/schema_files\/\(.*\)\/conf.*/\1/" )
+	# Settin Path to check if cores exist.
+	solr_path=$(find -name "*schema.xml" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
+	# Set metadata.csv path
+	metadata="data/index/metadata.csv"
+
+	# Running through each found core to see if it can be created.
+	for core in $cores; do
+	    core_path="$solr_path/$core"
+	    # Check if core exists in the local solr installation
+	    if [[ -d $core_path ]]; then
+	        echo "▓Aborted Creating: $core▓"
+	        echo "↓"
+	        echo "$core exists. Please change manually."
+	        echo ""
+	    else
+	    	# Creates core if it doesn't exist.
+			# Safety stop and start so no overlapping occurs during runtime
+			solr_helper stop &&
+			solr_helper start && 
+			echo "▓Creating Core: $core▓"
+			echo "↓"
+	        ./solr create -c "$core";
+	        # Needs to restart the solr installation to apply changes made manually.
+			solr_helper stop &&
+	        # Search local solr directory & Copy files from Github solr to local solr.
+			echo "▓Copying▓"
+			echo "↓"
+			echo "Start copying schema to new core ..."
+			cp schema_files/"$core"/conf/* "$core_path"/conf/.
+			echo ""
+			# Start Solr again for indexing
+			solr_helper start && 
+			echo ""
+			echo "▓Testing if applied Search Engine successfully changed▓"
+			echo "↓"
+			# See visually if schema is applied
+			echo "$(curl "http://localhost:8983/solr/$core/schema/similarity")";
+			echo ""
+			if [[ -f $metadata ]]; then
+				echo "▓Indexing Solr: $core▓"
+				echo "↓"
+		        ./solr post -c $core $metadata --params "&skip=arxiv_id,publish_time,pubmed_id&header=true";
+        	else 
+    			echo "▓!!!Aborted Indexing!!!▓"
+    			echo "metadata.csv must exist in following directory!"
+    			echo "data/index/metadata.csv"
+	    	fi
+	        echo ""
+	        echo "▓Finished creating Core: $core▓"
+	        echo ""
+	    fi
+	done
+
+	solr_helper stop
 fi
 
 echo "» Finished synchronizing schemas «"

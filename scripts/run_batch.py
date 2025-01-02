@@ -19,7 +19,7 @@ version_start= 10
 versions = [
     n for n in range(1, len(queries)+1)
 ]
-df_topics =  pd.read_csv("data/topics/topics_cluster_expansion")
+df_topics =  pd.read_csv("data/topics/topics_cluster_expansion.csv")
 
 n = 0
 for core in cores:
@@ -27,11 +27,13 @@ for core in cores:
     for version in versions:
         query = queries[version-1]
         print("Running...", f"Core:{core}", f"Version:{version+version_start-1}", f"Query:{query}", sep="\t")
-        solr = QUERY(version=str(version+version_start-1), 
+        solr = QUERY(
+                    version=str(version+version_start-1), 
                     core=core, 
                     rows=1000, 
                     url_query=query,
-                    df_topics=df_topics)
+                    df_topics=df_topics
+                )        
 
         solr.run()
         #pbar.update(n)

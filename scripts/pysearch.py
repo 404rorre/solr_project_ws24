@@ -34,7 +34,7 @@ class QUERY():
         self.version = f"{core}_{version}"
         self.df_topics = df_topics
         self.topicfile = topicfile
-        self.f_new_topic = True if not df_topics.empty else False
+        self.f_new_topic = True if isinstance(df_topics, pd.DataFrame) else False
             
     def run(self):
         """ 
@@ -100,10 +100,13 @@ class QUERY():
         """
         # query the title_txt field with the query taken from the topic file for all 50 topics
         if not self.f_new_topic:
-            if ".csv" in self.f_new_topic:
+            print("Using manipulated Topics.")
+            if ".csv" in self.topicfile:
                 self.df_topics = pd.read_csv(self.topicfile)
-            if ".xml" in self.f_new_topic:
+            if ".xml" in self.topicfile:
                 self.df_topics = pd.read_xml(self.topicfile)
+        else:
+            print("Using standard Topics. (no manipulation)")
         
         print(f"Start run: {self.run_file}\n")
         with open(self.run_file, 'w') as f_out:
