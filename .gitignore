@@ -12,6 +12,7 @@ retraction_data.csv
 # Max
 /solr #only root directory affected
 test/
+.python-version
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

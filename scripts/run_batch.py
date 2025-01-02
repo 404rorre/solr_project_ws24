@@ -11,15 +11,15 @@ cores = [
     "textEN_LMDirichlet"    
 ]
 queries= [
-    "title:($6)",
-    "abstract:($6)",
-    "title:($6) abstract:($6)"
+    "title:($11)",
+    "abstract:($11)",
+    "title:($11) abstract:($11)"
 ]
-version_start= 7
+version_start= 10
 versions = [
     n for n in range(1, len(queries)+1)
 ]
-df_topics =  pd.read_csv("data/topics/topics_llm_queryexpansion.csv")
+df_topics =  pd.read_csv("data/topics/topics_cluster_expansion")
 
 n = 0
 for core in cores:
