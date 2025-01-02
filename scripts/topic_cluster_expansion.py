@@ -23,5 +23,5 @@ for topic in topics:
     cluster_query = " ".join(set(term for query in queries for term in query.split()))
     df.loc[df["qid"]==topic, "clustered_terms"]=cluster_query
     
-df.to_csv("data/topics/topics_cluster_expansion", index=False)
+df.to_csv("data/topics/topics_cluster_expansion.csv", index=False)
 print(df.columns)
