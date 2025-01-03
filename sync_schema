@@ -232,7 +232,7 @@ if [[ $tolocal -eq 1 && $create -ne 1 ]]; then
 	solr_helper stop
 	copy_git
 	echo ""
-else 
+elif [[ $tolocal -eq 1 && $create -eq 1 ]]; then
 	echo "▓Aborted▓"
 	echo "Creating Cores is choosen."
 	echo "-tolocal and -createcore can't be choosen the at the same time."
@@ -267,7 +267,8 @@ if [[ $create -eq 1 ]]; then
 	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
 	# Set solr base_dir & Create symbolic link for adressing solr
 	# Check if script is executed in windows
-	solr_base_dir=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\.\/\(.*\/solr\)\/server\/solr\/.*/\1/" | head -n 1 )
+	solr_base_dir=$(solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/solr/server/' '{print $1"/solr"}') )
+	echo "$solr_base_dir"
 	if [[ -d "/c/Windows" ]]; then
 		solr_binary="$solr_base_dir/bin/solr.cmd"
 	else
