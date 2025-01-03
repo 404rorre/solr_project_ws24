@@ -262,11 +262,9 @@ fi
 # Creating non existing cores and saving schemas as well as
 if [[ $create -eq 1 ]]; then
 	# Finding available cores from Github.
-	cores=$(find -name "*schema.xml" \( ! -path "*/solr/server/solr/*" ! -path "*/schema_backup/*" \) |\
-	 		sed "s/.*\/schema_files\/\(.*\)\/conf.*/\1/" ) &&
+	cores=$(find -name "*schema.xml" \( -not -path "*/server/solr/*" -not -path "*/schema_backup/*" \) | sed "s/.*\/schema_files\/\(.*\)\/conf.*/\1/" )
 	# Settin Path to check if cores exist.
-	solr_path=$(find -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) |\
-				sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)&&
+	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
 
 	echo "$cores"
 	echo "$solr_path"
@@ -274,12 +272,12 @@ if [[ $create -eq 1 ]]; then
 	# Check if script is executed in windows
 	echo "▓Detecting System▓"
 	echo "↓"
-	solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/server/solr/' '{sub(/^\.\//, "", $1); print $1}')
+	solr_base_dir=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\.\/\(.*\)\/server\/solr\/.*/\1/" | head -n 1 )
 	if [[ -d "/c/Windows" ]]; then
-		echo "Detected Windows"		
+		echo "OS: Windows"		
 		solr_binary="$solr_base_dir/bin/solr.cmd"
 	else
-		echo "Detected Linux"
+		echo "OS: Linux"
 		solr_binary="$solr_base_dir/bin/solr"
 	fi
 	echo "Solr Directory: $solr_base_dir"
