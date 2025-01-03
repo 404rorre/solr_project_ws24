@@ -1,6 +1,6 @@
 # Ignore Data folder (prevents on uploading Gigs of Data to Github)
 data/
-solr/
+solr_engine/
 # Personal Ignores
 # Henri
 retraction_data.csv
