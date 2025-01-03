@@ -269,7 +269,7 @@ if [[ $create -eq 1 ]]; then
 	# Check if script is executed in windows
 	echo "▓Detecting System▓"
 	echo "↓"
-	solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/solr/server/' '{sub(/^\.\//, "", $1); print $1"/solr"}')
+	solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/server/solr/' '{sub(/^\.\//, "", $1); print $1}')
 	if [[ -d "/c/Windows" ]]; then
 		echo "Detected Windows"		
 		solr_binary="$solr_base_dir/bin/solr.cmd"
