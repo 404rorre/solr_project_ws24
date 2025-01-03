@@ -262,10 +262,10 @@ fi
 # Creating non existing cores and saving schemas as well as
 if [[ $create -eq 1 ]]; then
 	# Finding available cores from Github.
-	cores=$(find -name "*schema.xml" \( -not -path "*/solr/server/solr/*" -not -path "*/schema_backup/*" \) |\
+	cores=$(find -name "*schema.xml" \( ! -path "*/solr/server/solr/*" ! -path "*/schema_backup/*" \) |\
 	 		sed "s/.*\/schema_files\/\(.*\)\/conf.*/\1/" ) &&
 	# Settin Path to check if cores exist.
-	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
+	solr_path=$(find -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) |\
 				sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)&&
 
 	echo "$cores"
@@ -311,7 +311,7 @@ if [[ $create -eq 1 ]]; then
 			echo "▓Copying▓"
 			echo "↓"
 			echo "Start copying schema to new core ..."
-			cp schema_files/"$core"/conf/* "$core_path"/conf/.
+			cp "schema_files/$core/conf/"* "$core_path/conf/."
 			echo ""
 			# Start Solr again for indexing
 			solr_helper $solr_binary start && 
