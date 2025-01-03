@@ -266,8 +266,13 @@ if [[ $create -eq 1 ]]; then
 	# Settin Path to check if cores exist.
 	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
 	# Set solr base_dir & Create symbolic link for adressing solr
+	# Check if script is executed in windows
 	solr_base_dir=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\.\/\(.*\/solr\)\/server\/solr\/.*/\1/" | head -n 1 )
-	solr_binary="$solr_base_dir/bin/solr"
+	if [[ -d "/c/Windows" ]]; then
+		solr_binary="$solr_base_dir/bin/solr.cmd"
+	else
+		solr_binary="$solr_base_dir/bin/solr"
+	fi
 	# Set metadata.csv path
 	metadata="data/index/metadata.csv"
 
