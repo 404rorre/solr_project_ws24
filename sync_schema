@@ -267,13 +267,19 @@ if [[ $create -eq 1 ]]; then
 	solr_path=$(find -name "*schema.xml" \( -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) | sed "s/\(.*\/solr\/server\/solr\).*\/conf\/.*/\1/" | head -n 1)
 	# Set solr base_dir & Create symbolic link for adressing solr
 	# Check if script is executed in windows
-	solr_base_dir=$(solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/solr/server/' '{print $1"/solr"}') )
-	echo "$solr_base_dir"
+	echo "▓Detecting System▓"
+	echo "↓"
+	solr_base_dir=$(find . -name "*schema.xml" \( ! -path "*/schema_backup/*" ! -path "*/schema_files/*" \) | head -n 1 | awk -F '/solr/server/' '{sub(/^\.\//, "", $1); print $1"/solr"}')
 	if [[ -d "/c/Windows" ]]; then
+		echo "Detected Windows"		
 		solr_binary="$solr_base_dir/bin/solr.cmd"
 	else
+		echo "Detected Linux"
 		solr_binary="$solr_base_dir/bin/solr"
 	fi
+	echo "Solr Directory: $solr_base_dir"
+	echo "Binary Path: $solr_binary"
+	echo ""
 	# Set metadata.csv path
 	metadata="data/index/metadata.csv"
 
