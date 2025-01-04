@@ -10,10 +10,16 @@ cores = [
     "textEN_IBS",
     "textEN_LMDirichlet"    
 ]
+boosting = [
+                (2, 1),
+                (5, 2),
+                (1, 2),
+                (2, 5) # TODO do tomorrow
+            ]
 queries= [
     #"title:($11)",
     #"abstract:($11)",
-    "title:($11)^5 AND abstract:($11)^2",
+    #"title:($11)^5 AND abstract:($11)^2",
     "title:($11)^5 OR abstract:($11)^2"
 ]
 version_start= 24
