@@ -7,28 +7,24 @@ from pysearch import QUERY
 cores = [
     "textEN_bm25",  
 ]
-boosting = [
-                (2, 1),
-                (1, 2),
-                (2, 5) # TODO do tomorrow
-            ]
+boosting = [3, 4]
 
-version_start= 44
+version_start= 62
 
 
 for boost in boosting:
     queries= [
         #"title:($11)",
         #"abstract:($11)",
-        f"title:($11)^{boost[0]} AND abstract:($11)^{boost[1]}",
-        f"title:($11)^{boost[0]} OR abstract:($11)^{boost[1]}"
+        f"title:($6)^{boost} AND abstract:($6)^1",
+        f"title:($6)^{boost} OR abstract:($6)^1"
     ]
     
     
     versions = [
     n for n in range(1, len(queries)+1)
     ]
-    df_topics =  pd.read_csv("topic_expansions/topics_cluster_expansion.csv")
+    df_topics =  pd.read_csv("topic_expansions/topics_llm_queryexpansion.csv")
     #topic_file = "data/topics/topics-rnd5.xml"
     n = 0
     for core in cores:
