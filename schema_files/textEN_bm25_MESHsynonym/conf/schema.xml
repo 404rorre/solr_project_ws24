@@ -299,12 +299,15 @@
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
       <analyzer type="index">
         <tokenizer name="standard"/>
+        <!--
         <filter name="stop" ignoreCase="true" words="stopwords.txt" />
-        <!-- in this example, we will only use synonyms at query time
-        <filter name="synonymGraph" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
-        <filter name="flattenGraph"/>
-        -->
         <filter name="lowercase"/>
+        -->
+        <!-- in this example, we will only use synonyms at query time-->
+        <filter name="synonymGraph" synonyms="synonyms.txt" ignoreCase="true" expand="false"/>
+        <filter name="flattenGraph"/>
+        
+        
       </analyzer>
       <analyzer type="query">
         <tokenizer name="standard"/>
