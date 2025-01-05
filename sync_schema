@@ -6,7 +6,7 @@
 copy()
 {
 	path="$1"
-	declare -a schemas=("managed-schema.xml" "schema.xml" "solrconfig.xml" "stopwords_en.txt")
+	declare -a schemas=("managed-schema.xml" "schema.xml" "solrconfig.xml" "stopwords_en.txt" "protwords.txt" "stopwords.txt" "synonyms.txt")
 	for schema in "${schemas[@]}"
 	do
 		find -name "$schema" \( -not -path "*/configsets/*" -not -path "*/schema_backup/*" -not -path "*/schema_files/*" \) |\
@@ -31,7 +31,7 @@ copy()
 }
 
 copy_git()
-{	declare -a schemas=("managed-schema.xml" "schema.xml" "solrconfig.xml" "stopwords_en.txt")
+{	declare -a schemas=("managed-schema.xml" "schema.xml" "solrconfig.xml" "stopwords_en.txt" "protwords.txt" "stopwords.txt" "synonyms.txt")
 	for schema in "${schemas[@]}"
 	do
 		find -name "$schema" \( -not -path "*/schema_files/*" -not -path "*/schema_backup/*" \) |\
@@ -311,7 +311,7 @@ if [[ $create -eq 1 ]]; then
 			echo "Start copying schema to new core ..."
 			echo "$core_path"
 			echo "cp schema_files/$core/conf/* $core_path/conf/."
-			cp "schema_files/$core/conf/"* "$core_path/conf/."
+			cp -r "schema_files/$core/conf/"* "$core_path/conf/."
 			echo ""
 			# Start Solr again for indexing
 			solr_helper $solr_binary start && 
