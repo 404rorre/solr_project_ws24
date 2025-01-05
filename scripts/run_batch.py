@@ -4,18 +4,18 @@ from pysearch import QUERY
 
 
 
-cores = [
+CORES: list[str] = [
     "textEN_bm25", 
 ]
 #boosting = [2, 3, 4, 5]
 
-version_start= 10001
+VERSION_START: int = 10001
 
 
 #for boost in boosting:
 
 
-queries= [
+QUERIES: list[str] = [
     "title:(query)",
     "abstract:(query)",
     "title:(query) AND abstract:(query)",
@@ -32,17 +32,17 @@ topic_file = "data/topics/topics-rnd5.xml"
 ##################################################################################################
 ##################################################################################################
 versions = [
-n for n in range(1, len(queries)+1)
+n for n in range(1, len(QUERIES)+1)
 ]
 
 n = 0
-for core in cores:
-    #with tqdm(total=len(cores)*len(versions), desc="Running Settings", position=-0) as pbar: # maybe later too much time for debugging
+for core in CORES:
+    #with tqdm(total=len(CORES)*len(versions), desc="Running Settings", position=-0) as pbar: # maybe later too much time for debugging
     for version in versions:
-        query = queries[version-1]
-        print("Running...", f"Core:{core}", f"Version:{version+version_start-1}", f"Query:{query}", sep="\t")
+        query = QUERIES[version-1]
+        print("Running...", f"Core:{core}", f"Version:{version+VERSION_START-1}", f"Query:{query}", sep="\t")
         solr = QUERY(
-                    version=str(version+version_start-1), 
+                    version=str(version+VERSION_START-1), 
                     core=core, 
                     rows=1000, 
                     url_query=query,
@@ -53,9 +53,9 @@ for core in cores:
         solr.run()
         #pbar.update(n)
         n += 1
-version_start += len(versions)
+VERSION_START += len(versions)
 
 
 print("Finished runs")
-print("Planned runs:\t",len(cores)*len(versions))
+print("Planned runs:\t",len(CORES)*len(versions))
 print("Executed runs:\t",n)
