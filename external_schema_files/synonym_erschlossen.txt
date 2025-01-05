@@ -1,0 +1,24 @@
+coronavirus,covid-19,covid 19,SARS-CoV,SARS-CoV2,SARS-CoV-2,2019-nCov,virus,spike protein,glycoprotein,virus infection,pandemic,disease
+immunity,immune response,immune
+animal virus,zoophaginae
+COVID-19 virus testing,testing,virus testing,2019 novel coronavirus testing,infection testing,point-of-care testing,diagnostic testing,bedside testing
+serological test,serology testing,antibody test,COVID-19 antibody,serodiagnosis,antigen test
+diagnose,diagnosis,examination,diagnoses
+infection,infestation
+mortality,death rate,death,case fatality rate,crude fatality rate
+disease transmission,close contact,infectious disease,person to person,event,superspread,super spread
+social distancing,physical distancing,distancing,stay at home orders
+quarantine,travel restriction,lockdown,cordon sanitaire,self quarantine,health lockdown,border closing
+clinical trials,intervention study
+ACE,angiotensin-converting enzyme inhibitors,ACE inhibitors,inhibitor,enzyme inhibitor
+biomarker,marker,biological marker,clinical marker,surrogate marker,surrogate endpoint,immune marker,immunologic,viral marker,biochemical marker,laboratory marker
+flu,human flu,grippe,influenza
+vaccine,virus vaccine,mRNA,RNA,messenger RNA vaccine
+adaptation,physiologic,plasticity,adaptive,physiological adaptation
+cross protection,protection,cross
+reporting bias,observer variation,bias,variability,observer bias
+intensive care,critical care
+pathogen-host,pathogen-host interaction,host
+psychological disorder,mental disorder,mental illness,psychiatric disorder,psychiatric disease,behavior disorder
+healthcare disparities,disparity,healthcare,healthcare inequalities,healthcare disparity
+recovery,rehabilitation,habilitation
