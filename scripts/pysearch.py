@@ -88,8 +88,7 @@ class QUERY():
             url_query = url_query.replace("question",f"{self.question}")
         if self.narrative:
             url_query = url_query.replace("narrative",f"{self.narrative}")
-        for col in range(len(self.df_topics.columns) -4+1): # reducing range in for loop by -4 because of the original columns of the topic file # +1 for including last column
-            col = col+4 # expanding again for right column index # -1 for index counting (off by one)
+        for col in range(1, len(self.df_topics.columns)+1):
             url_query = url_query.replace(f"${col}",f"{self.df_topics.iloc[idx_topic, col-1]}")
             
         return url_query
