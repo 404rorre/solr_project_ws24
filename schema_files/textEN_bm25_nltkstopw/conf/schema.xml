@@ -299,7 +299,7 @@
     <fieldType name="text_general" class="solr.TextField" positionIncrementGap="100" multiValued="true">
       <analyzer type="index">
         <tokenizer name="standard"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <!-- in this example, we will only use synonyms at query time
         <filter name="synonymGraph" synonyms="index_synonyms.txt" ignoreCase="true" expand="false"/>
         <filter name="flattenGraph"/>
@@ -308,7 +308,7 @@
       </analyzer>
       <analyzer type="query">
         <tokenizer name="standard"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <filter name="synonymGraph" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter name="lowercase"/>
       </analyzer>
@@ -328,12 +328,12 @@
     <fieldType name="text_gen_sort" class="solr.SortableTextField" positionIncrementGap="100" multiValued="true">
       <analyzer type="index">
         <tokenizer name="standard"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <filter name="lowercase"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer name="standard"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <filter name="synonymGraph" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
         <filter name="lowercase"/>
       </analyzer>
@@ -461,7 +461,7 @@
     <fieldType name="text_general_rev" class="solr.TextField" positionIncrementGap="100">
       <analyzer type="index">
         <tokenizer name="standard"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <filter name="lowercase"/>
         <filter name="reversedWildcard" withOriginal="true"
                 maxPosAsterisk="3" maxPosQuestion="2" maxFractionAsterisk="0.33"/>
@@ -469,7 +469,7 @@
       <analyzer type="query">
         <tokenizer name="standard"/>
         <filter name="synonymGraph" synonyms="synonyms.txt" ignoreCase="true" expand="true"/>
-        <filter name="stop" ignoreCase="true" words="stopwords.txt" />
+        <filter name="stop" ignoreCase="true" words="stopwords_en.txt" />
         <filter name="lowercase"/>
       </analyzer>
     </fieldType>

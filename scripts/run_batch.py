@@ -5,11 +5,11 @@ from pysearch import QUERY
 
 
 CORES: list[str] = [
-    "textEN_bm25", 
+    "textEN_bm25_nltkstopw", 
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 10001
+VERSION_START: int = 1
 
 
 #for boost in boosting:
