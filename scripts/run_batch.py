@@ -5,7 +5,7 @@ from pysearch import QUERY
 
 
 CORES: list[str] = [
-    "textEN_bm25_nltkstopw", 
+    "textEN_bm25_MESHsynonym", 
 ]
 #boosting = [2, 3, 4, 5]
 
