@@ -4,6 +4,7 @@ solr_engine/
 # Personal Ignores
 # Henri
 retraction_data.csv
+temporary.py
 
 # Jan
 
