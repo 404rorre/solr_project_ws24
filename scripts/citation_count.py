@@ -14,10 +14,19 @@ def get_citationCount_by_paperID(paperID: str) -> int | None:
 
 def get_citationCount_by_DOI(DOI: str) -> int | None: 
     url = f"https://api.semanticscholar.org/graph/v1/paper/DOI:{DOI.strip()}?fields=citationCount"
-    try: 
-        response: requests.Response = requests.get(url)
-        if response.status_code != 200: 
-            raise Exception()
-        return int(response.json()["citationCount"])
-    except: 
-        return None
+    while True: 
+        try: 
+            response: requests.Response = requests.get(url)
+            if response.status_code == 429: 
+                print("too many requests, asking again...")
+                continue
+            if response.status_code != 200: 
+                raise Exception()
+            return int(response.json()["citationCount"])
+        except: 
+            print(f"{response.json() = }")
+            return None
+
+
+if __name__ == "__main__": 
+    print(get_citationCount_by_DOI("10.1186/1471-2334-1-6"))
