@@ -2,9 +2,9 @@ ace2
 antiviral
 cardiac
 cardiovascular
+corona
 coronavirus
 coronaviruses
-cov
 covid
 covid-19
 covid19
@@ -24,6 +24,6 @@ receptor
 renal
 rna
 rt-pcr
-sars
 sars-cov-2
+sarscov2
 wuhan
