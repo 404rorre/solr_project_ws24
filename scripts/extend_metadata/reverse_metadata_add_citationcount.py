@@ -1,3 +1,4 @@
+
 import os
 import asyncio
 import aiohttp
@@ -41,6 +42,9 @@ async def update_citation_counts(csv_path: str):
     if "citation_count" not in df.columns:
         df["citation_count"] = 0
 
+    # Reverse the DataFrame for bottom-to-top processing
+    df = df[::-1]
+
     # Create an aiohttp session
     async with aiohttp.ClientSession() as session:
         for index, row in df.iterrows():
@@ -51,7 +55,7 @@ async def update_citation_counts(csv_path: str):
                 continue
 
             print(f"Processing DOI: {doi}")
-            citation_count = await fetch_citation_count(str(doi), session)
+            citation_count = await fetch_citation_count(doi, session)
 
             # Update the DataFrame
             df.at[index, "citation_count"] = citation_count
