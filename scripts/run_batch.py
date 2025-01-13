@@ -5,24 +5,32 @@ from pysearch import QUERY
 
 
 CORES: list[str] = [
-    "base_jan_synonyms_protwords", 
+
+    "textEN_bm25", 
+
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 1
+VERSION_START: int = 74
 
 
 #for boost in boosting:
 
 
 QUERIES: list[str] = [
-    "title:(query)",
-    "abstract:(query)",
-    "title:(query) AND abstract:(query)",
-    "title:(query) OR abstract:(query)",
+    #["title:($2~)", " OR ", "abstract:($2~)"],
+    #["title:($2*)", " OR ", "abstract:($2*)"],
+    #["title:($2~)", " AND ", "abstract:($2~)"],
+    #["title:($2*)", " AND ", "abstract:($2*)"],
     
-    #f"title:(query)^1 AND abstract:(query)^{boost}",
-    #f"title:(query)^1 OR abstract:(query)^{boost}"
+    '({!edismax qf="title abstract" pf2="title abstract"}query)',
+    '({!edismax qf="title abstract" pf3="title abstract"}query)',
+    '({!edismax qf="title abstract" pf2="title" pf3="abstract" ps3=5}query)',
+    '({!edismax qf="title abstract" mm="2<75%25 5<60%25 7<40%25"}query)',
+    '(({!edismax qf="title" mm="2<75%25 5<60%25 7<40%25"}query) AND ({!edismax qf="abstract" mm="3<1 5<75%25 7<50%25"}query))',
+    '({!edismax qf="title^1 abstract^4" pf2="title abstract"}query)',
+    '({!edismax qf="title^1 abstract^4" pf3="title abstract"}query)'
+    
 ]
 
 
