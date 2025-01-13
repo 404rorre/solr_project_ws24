@@ -1,0 +1,58 @@
+African-Americans, Black Americans, Afro-Americans
+analysis, examination, study, assessment
+animal, creature, organism
+biomarker, biological marker, indicator, diagnostic marker
+children, kids, minors
+clinical, medical, therapeutic, healthcare-related
+coronavirus, COVID-19, SARS-CoV-2, novel coronavirus, 2019-nCoV, CoV, coronavirus disease
+cytokine, immune protein, signaling molecule, inflammatory mediator
+datasets, data, data sets, collections of data
+dexamethasone, corticosteroid, anti-inflammatory drug, steroid, treatment for COVID-19, therapeutic corticosteroid
+diabetes, diabetes mellitus, hyperglycemia, insulin resistance
+difference, disparity, distinction, variation, dissimilarity
+die, pass away, perish, decease
+drug, medication, pharmaceutical, remedy, treatment
+early, initial, primary, first, preliminary
+flu, influenza, seasonal flu
+heart, cardiovascular, pump
+hospital, healthcare facility, medical center, clinic, infirmary
+hypertension, high blood pressure, elevated blood pressure
+hydroxychloroquine, antimalarial drug, antirheumatic drug
+impact, effect, influence, consequence, result
+inflammatory, inflammatory response, swollen, irritated
+inhibitors, blockers, suppressors, antagonists, restrainers
+kills, eradicates, exterminates, destroys, terminates
+mental, psychological, cognitive, emotional
+mRNA, messenger RNA, genetic material, RNA vaccine, RNA-based vaccine
+mortality, death rate, fatality, death toll, mortality rate
+models, simulations, prototypes, representations
+mutations, alterations, changes, variations, modifications
+outcomes, results, consequences, effects, ramifications
+origin, source, beginning, root, cause
+pandemic, global outbreak, worldwide epidemic, health crisis, global health crisis, infectious disease outbreak, international outbreak
+phylogenetic, evolutionary, genetic, ancestral
+prevent, avert, stop, avoid, hinder
+public, general population, society, community, people
+quarantine, isolation, confinement, lockdown, self-isolation, self-quarantine, seclusion, preventive isolation, containment, restricted movement
+rationing, allocation, distribution, controlled supply
+recovery, convalescence, recuperation, rehabilitation, healing, post-disease recovery, recovery phase, post-illness recovery
+remdesivir, antiviral drug, COVID-19 treatment, experimental drug for COVID-19, treatment for SARS-CoV-2
+reporting, documentation, account, recording, reporting
+response, reply, reaction, answer, feedback
+reopening, restart
+sanitizer, disinfectant, antiseptic, germicide
+school, educational institution, academy, learning center
+social, communal, societal, public, interpersonal
+spike, surge, increase, rise, jump
+spread, transmission, dissemination, propagation, diffusion, transfer, circulation, spread, contagion, infection spread, viral spread
+structure, organization, framework, composition, configuration
+subtypes, variants, types, categories, classifications
+surfaces, exterior, facades, outer layers, fronts
+symptoms, signs, indications, manifestations, expressions
+test, rapid testing, serological, examination, analysis
+trials, experiments, tests, studies, clinical trials, experimental studies, research studies, vaccine trials, therapeutic trials, clinical research, testing phases
+vaccine, inoculation, immunization, shot, jab, vaccine doses, COVID-19 vaccines, coronavirus vaccine, anti-virus vaccine
+violence, aggression, assault, harm
+Vitamin D, calciferol, D3
+weather, climate, meteorological, atmospheric
+changes, alterations, modifications, adjustments, transformations
