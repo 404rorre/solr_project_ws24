@@ -81,7 +81,7 @@ class QUERY():
         """
         if isinstance(url_query, str):
             # cleans white spaces
-            url_query = url_query.replace(" ", "%20")
+            
             # checks if topic parts are present in url and replaces it with value
             if self.query:
                 url_query = url_query.replace("query",f"{self.query}")
@@ -90,12 +90,12 @@ class QUERY():
             if self.narrative:
                 url_query = url_query.replace("narrative",f"{self.narrative}")
             for col in range(1, len(self.df_topics.columns)+1):
-                url_query = url_query.replace(f"${col}",f"{self.df_topics.iloc[idx_topic, col-1]}")           
+                url_query = url_query.replace(f"${col}",f"{self.df_topics.iloc[idx_topic, col-1]}")     
+            url_query = url_query.replace(" ", "%20")      
             query_string = url_query
         elif isinstance(url_query, list):
             query_string=""
-            for query in url_query:
-                query = query.replace(" ", "%20")
+            for query in url_query:                
                 if "*" in query:
                     for col in range(1, len(self.df_topics.columns)+1):
                         if isinstance(self.df_topics.iloc[idx_topic, col-1], str):
@@ -109,6 +109,7 @@ class QUERY():
                 else:
                     for col in range(1, len(self.df_topics.columns)+1):
                         query = query.replace(f"${col}",f"{self.df_topics.iloc[idx_topic, col-1]}")
+                        query = query.replace(" ", "%20")
                 query_string += query
                                    
         return query_string
