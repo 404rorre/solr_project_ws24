@@ -1,3 +1,4 @@
+from unidecode import unidecode
 import pandas as pd
 import os 
 
@@ -8,9 +9,12 @@ assert os.path.isfile(MAP_DIRECTORY), "map not found"
 
 test_output_directory: str = os.path.join(os.path.dirname(__file__), "..", "..", "data", "index", "mapped_test.csv")
 
-METADATA: pd.DataFrame = pd.read_csv(METADATA_DIRECTORY)
-MAP: pd.DataFrame = pd.read_csv(MAP_DIRECTORY)
+METADATA: pd.DataFrame = pd.read_csv(METADATA_DIRECTORY, dtype={"doi":str})
 
-MERGE: pd.DataFrame = METADATA.merge(MAP, on="doi", how="left")
+MAP: pd.DataFrame = pd.read_csv(MAP_DIRECTORY, dtype={"doi":str})
 
-MERGE.to_csv(test_output_directory)
+METADATA["citation_count"] = MAP["citation_count"]
+
+#MERGE: pd.DataFrame = pd.merge(METADATA, MAP, left_on="doi", right_on="doi", how="left")
+
+METADATA.to_csv(test_output_directory)
