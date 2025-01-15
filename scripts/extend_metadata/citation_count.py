@@ -32,4 +32,4 @@ def get_citationCount_by_DOI(DOI: str) -> int | None:
 
 
 if __name__ == "__main__": 
-    print(get_citationCount_by_DOI("10.1186/1471-2334-1-6"))
+    print(get_citationCount_by_DOI("10.1590/s1807-59322011000600015"))
