@@ -3,6 +3,7 @@ from tqdm import tqdm
 from pysearch import QUERY
 
 
+query_parser="defType"
 
 CORES: list[str] = [
 
@@ -11,7 +12,7 @@ CORES: list[str] = [
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 74
+VERSION_START: int = 103
 
 
 #for boost in boosting:
@@ -23,19 +24,18 @@ QUERIES: list[str] = [
     #["title:($2~)", " AND ", "abstract:($2~)"],
     #["title:($2*)", " AND ", "abstract:($2*)"],
     
-    '({!edismax qf="title abstract" pf2="title abstract"}query)',
-    '({!edismax qf="title abstract" pf3="title abstract"}query)',
-    '({!edismax qf="title abstract" pf2="title" pf3="abstract" ps3=5}query)',
-    '({!edismax qf="title abstract" mm="2<75%25 5<60%25 7<40%25"}query)',
-    '(({!edismax qf="title" mm="2<75%25 5<60%25 7<40%25"}query) AND ({!edismax qf="abstract" mm="3<1 5<75%25 7<50%25"}query))',
-    '({!edismax qf="title^1 abstract^4" pf2="title abstract"}query)',
-    '({!edismax qf="title^1 abstract^4" pf3="title abstract"}query)'
+
+"((title:(query)^1 OR abstract:(query))^4 OR (title:($5) OR abstract:($5))) OR (title:($6) OR abstract:($6))",
+"((title:(query) OR abstract:(query)) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6) OR abstract:($6))",
+"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6) OR abstract:($6))",
+"((title:(query) OR abstract:(query)) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6)^1 OR abstract:($6)^4)",
+"(title:($5) OR abstract:($5)) OR (title:($6) OR abstract:($6))"
     
 ]
 
 
-# df_topics =  pd.read_csv("topic_expansions/topics_llm_queryexpansion.csv")
-topic_file = "data/topics/topics-rnd5.xml"
+df_topics =  pd.read_csv("topic_expansions/topics_llm_queryexpansion.csv")
+#topic_file = "data/topics/topics-rnd5.xml"
 
 ##################################################################################################
 ##################################################################################################
@@ -48,14 +48,15 @@ for core in CORES:
     #with tqdm(total=len(CORES)*len(versions), desc="Running Settings", position=-0) as pbar: # maybe later too much time for debugging
     for version in versions:
         query = QUERIES[version-1]
+
         print("Running...", f"Core:{core}", f"Version:{version+VERSION_START-1}", f"Query:{query}", sep="\t")
         solr = QUERY(
                     version=str(version+VERSION_START-1), 
                     core=core, 
                     rows=1000, 
                     url_query=query,
-                    #df_topics=df_topics,
-                    topicfile=topic_file
+                    df_topics=df_topics,
+                    #topicfile=topic_file,
                 )        
 
         solr.run()
