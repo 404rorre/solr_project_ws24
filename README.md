@@ -10,6 +10,13 @@ Building and optimizing an information retrieval system for COVID-19 research pa
 ## Trec Eval Python
 [pytrec_eval](https://github.com/cvangysel/pytrec_eval)
 
+# metadata.csv mit citation_count anreichern
+
+`merge_metadata_and_map.py` im directory `scripts/extend_metadata` mit Python ausführen 
+
+```bash
+python scripts/extend_metadata/merge_metadata_and_map.py
+```
 
 # Setup Guide for TREC-COVID Project
 
