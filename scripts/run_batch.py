@@ -12,7 +12,7 @@ CORES: list[str] = [
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 103
+VERSION_START: int = 133
 
 
 #for boost in boosting:
@@ -23,24 +23,20 @@ QUERIES: list[str] = [
     #["title:($2*)", " OR ", "abstract:($2*)"],
     #["title:($2~)", " AND ", "abstract:($2~)"],
     #["title:($2*)", " AND ", "abstract:($2*)"],
-    
-
-"((title:(query)^1 OR abstract:(query))^4 OR (title:($5) OR abstract:($5))) OR (title:($6) OR abstract:($6))",
-"((title:(query) OR abstract:(query)) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6) OR abstract:($6))",
-"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6) OR abstract:($6))",
-"((title:(query) OR abstract:(query)) OR (title:($5)^1 OR abstract:($5)^4)) OR (title:($6)^1 OR abstract:($6)^4)",
-"(title:($5) OR abstract:($5)) OR (title:($6) OR abstract:($6))"
-    
+    "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4) OR (title:($6)^1 OR abstract:($6)^4)) AND (title:($6) OR abstract:($6))"
+   
+   
+   
 ]
 
 
-df_topics =  pd.read_csv("topic_expansions/topics_llm_queryexpansion.csv")
+df_topics =  pd.read_csv("topic_expansions/topics_final_queryexpansion.csv")
 #topic_file = "data/topics/topics-rnd5.xml"
 
 ##################################################################################################
 ##################################################################################################
 versions = [
-n for n in range(1, len(QUERIES)+1)
+    n for n in range(1, len(QUERIES)+1)
 ]
 
 n = 0
