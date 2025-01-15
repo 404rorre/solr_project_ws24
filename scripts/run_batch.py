@@ -7,25 +7,21 @@ query_parser="defType"
 
 CORES: list[str] = [
 
-    "textEN_bm25", 
+    "textEN_bm25_citcount", 
 
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 133
+VERSION_START: int = 1
 
 
 #for boost in boosting:
 
 
 QUERIES: list[str] = [
-    #["title:($2~)", " OR ", "abstract:($2~)"],
-    #["title:($2*)", " OR ", "abstract:($2*)"],
-    #["title:($2~)", " AND ", "abstract:($2~)"],
-    #["title:($2*)", " AND ", "abstract:($2*)"],
-    "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4) OR (title:($6)^1 OR abstract:($6)^4)) AND (title:($6) OR abstract:($6))"
-   
-   
+"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:[1 TO 99998]",
+"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:99999",
+"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:[1 TO 99998]& fq=citation_count:99999",
    
 ]
 
