@@ -12,7 +12,8 @@ CORES: list[str] = [
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 131
+VERSION_START: int = 1
+
 
 
 #for boost_lim in [n/10 for n in range(1,11)]:
