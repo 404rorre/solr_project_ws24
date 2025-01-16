@@ -33,7 +33,7 @@ if v_flag:
 
     # Change all nan to -1 for differenatiation and data handling in solr indexing & querying
     MAP["citation_count"] = MAP["citation_count"].fillna(-1)
-    MAP.loc[MAP["citation_count"]==-1,["citation_count"]]= 99999
+    MAP.loc[MAP["citation_count"]==-1,["citation_count"]]= 0
 
     # copy citation counts to metadata.csv
     METADATA["citation_count"] = MAP["citation_count"]

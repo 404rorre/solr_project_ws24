@@ -12,18 +12,33 @@ CORES: list[str] = [
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 1
+VERSION_START: int = 109
 
 
-#for boost in boosting:
+#for boost_lim in [n/10 for n in range(1,11)]:
 
 
 QUERIES: list[str] = [
-"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:[1 TO 99998]",
-"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:99999",
-"((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & fq=citation_count:[1 TO 99998]& fq=citation_count:99999",
-   
-]
+    
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=2000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=2500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=3000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=3500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=4000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=4500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=5000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=5500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=6000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=6500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=7000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=7500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=8000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=8500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=9000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=9500 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+        "((title:(query)^1 OR abstract:(query)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND (title:($6) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=10000 reRankWeight=0.9}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
+
+    ]
 
 
 df_topics =  pd.read_csv("topic_expansions/topics_final_queryexpansion.csv")
