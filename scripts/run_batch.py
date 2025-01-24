@@ -12,7 +12,7 @@ CORES: list[str] = [
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 1
+VERSION_START: int = 3
 
 
 
@@ -21,10 +21,8 @@ VERSION_START: int = 1
 
 QUERIES: list[str] = [
     
-
-        "((title:(query)^1 OR abstract:(query)^4) OR (title:(question)^1 OR abstract:(question)^4) OR (title:(narrative)^1 OR abstract:(narrative)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND ((title:(query) OR abstract:(query)) OR (title:(question) OR abstract:(question)) OR (title:($6) OR abstract:($6))) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
-        "((title:(query)^1 OR abstract:(query)^4) OR (title:(question)^1 OR abstract:(question)^4) OR (title:(narrative)^1 OR abstract:(narrative)^4) OR (title:($5)^1 OR abstract:($5)^4) OR (title:($7)^1 OR abstract:($7)^4)) AND ((title:(query) OR abstract:(query)) OR (title:(question) OR abstract:(question)) OR (title:(narrative) OR abstract:(narrative)) OR (title:($6) OR abstract:($6))) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
-    
+    "(title:(query question narrative $5 $7)^1 OR abstract:(query question narrative $5 $7)^4) AND (title(query question $6) OR abstract:(query question $6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+    "(title:(query question narrative $5 $7)^1 OR abstract:(query question narrative $5 $7)^4) AND (title(query question narrative $6) OR abstract:(query question narrative $6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
     
     ]
 
