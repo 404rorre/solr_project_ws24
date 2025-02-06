@@ -70,7 +70,7 @@ def create_visualization(rank_scores):
 def main():
     # File paths
     qrel_path = 'data/qrel/qrels-covid_d5_j0.5-5.txt'
-    run_path = 'runs/processed/DIS17-2024-assignment3-BLACKBOX-textEN_bm25_nltk_cit_1.run'
+    run_path = 'runs/processed/base_bm25_90001.run'
     
     # Load and process files
     relevance_map = load_qrel_file(qrel_path)

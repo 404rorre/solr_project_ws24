@@ -7,12 +7,13 @@ query_parser="defType"
 
 CORES: list[str] = [
 
-    "textEN_bm25_nltk_cit", 
+    "textEN_bm25_citcount"
+    #"textEN_bm25_nltk_cit", 
 
 ]
 #boosting = [2, 3, 4, 5]
 
-VERSION_START: int = 3
+VERSION_START: int = 133
 
 
 
@@ -21,9 +22,9 @@ VERSION_START: int = 3
 
 QUERIES: list[str] = [
     
-
-    "(title:(query)^1 OR title:(question)^1 OR title:(narrative)^1 OR title:($5)^1 OR title:($7)^1 OR abstract:(query)^4 OR abstract:(question)^4 OR abstract:(narrative)^4 OR abstract:($5)^4 OR abstract:($7)^4 ) AND ( title:(query) OR title:(question) OR title:($6) OR abstract:(query)OR abstract:(question) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
-    "(title:(query)^1 OR title:(question)^1 OR title:(narrative)^1 OR title:($5)^1 OR title:($7)^1 OR abstract:(query)^4 OR abstract:(question)^4 OR abstract:(narrative)^4 OR abstract:($5)^4 OR abstract:($7)^4 ) AND ( title:(query) OR title:(question) OR title:(narrative) OR title:($6) OR abstract:(query) OR abstract:(question) OR abstract:(narrative) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
+    "(title:(query) OR abstract:(query)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0}& rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
+    #"(title:(query)^1 OR title:(question)^1 OR title:(narrative)^1 OR title:($5)^1 OR title:($7)^1 OR abstract:(query)^4 OR abstract:(question)^4 OR abstract:(narrative)^4 OR abstract:($5)^4 OR abstract:($7)^4 ) AND ( title:(query) OR title:(question) OR title:($6) OR abstract:(query)OR abstract:(question) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}",
+    #"(title:(query)^1 OR title:(question)^1 OR title:(narrative)^1 OR title:($5)^1 OR title:($7)^1 OR abstract:(query)^4 OR abstract:(question)^4 OR abstract:(narrative)^4 OR abstract:($5)^4 OR abstract:($7)^4 ) AND ( title:(query) OR title:(question) OR title:(narrative) OR title:($6) OR abstract:(query) OR abstract:(question) OR abstract:(narrative) OR abstract:($6)) & rq={!rerank reRankQuery=$rqq reRankDocs=1500 reRankWeight=1.0} & rqq={!func v=div(log(sum(field(citation_count),1)),log(23426))}"
     
     
     ]
